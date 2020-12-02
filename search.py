@@ -113,14 +113,15 @@ def depthFirstSearch(problem):
             if problem.isGoalState(current_state):
                 return current_actions
 
-            # push next states to stack if the goal is not reach
-            successor_states = problem.getSuccessors(current_state)
-            for successor_state in successor_states:
-                x_y_coordinates = successor_state[0]
-                pacman_direction = successor_state[1]
-                get_to_successor_state_actions = [y for x in [current_actions, [pacman_direction]] for y in x]
-                next_successor_state = (x_y_coordinates, get_to_successor_state_actions)
-                stack.push(next_successor_state)
+            else:
+                # push next states to stack if the goal is not reach
+                successor_states = problem.getSuccessors(current_state)
+                for successor_state in successor_states:
+                    x_y_coordinates = successor_state[0]
+                    pacman_direction = successor_state[1]
+                    get_to_successor_state_actions = [y for x in [current_actions, [pacman_direction]] for y in x]
+                    next_successor_state = (x_y_coordinates, get_to_successor_state_actions)
+                    stack.push(next_successor_state)
 
     return list()
 
