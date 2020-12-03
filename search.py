@@ -74,139 +74,6 @@ def tinyMazeSearch(problem):
     return [s, s, w, s, w, w, s, w]
 
 
-def depthFirstSearch(problem):
-    """
-    Search the deepest nodes in the search tree first.
-
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
-
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    """
-    "*** YOUR CODE HERE ***"
-    # instantiate stack data structure since dfs uses stacks
-    stack = util.Stack()
-
-    visited_nodes = list()
-    valid_legal_actions = list()
-
-    initial_state = problem.getStartState()
-
-    # push initial starting point into the stack
-    stack.push((initial_state, valid_legal_actions))
-
-    while stack:
-        # get current state and current actions
-        goal_state = stack.pop()
-        current_state = goal_state[0]
-        current_actions = goal_state[1]
-
-        # chek if current not already visited and add to visited nodes if true
-        if current_state not in visited_nodes:
-            visited_nodes.append(current_state)
-            # check if current state is the goal of the problem
-            if problem.isGoalState(current_state):
-                return current_actions
-
-            else:
-                # push next states to stack if the goal is not reach
-                successor_states = problem.getSuccessors(current_state)
-                for successor_state in successor_states:
-                    x_y_coordinates = successor_state[0]
-                    pacman_direction = successor_state[1]
-                    get_to_successor_state_actions = [y for x in [current_actions, [pacman_direction]] for y in x]
-                    next_successor_state = (x_y_coordinates, get_to_successor_state_actions)
-                    stack.push(next_successor_state)
-
-    return list()
-
-
-def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    queue = util.Queue()
-
-    visited_nodes = list()
-    valid_legal_actions = list()
-
-    initial_state = problem.getStartState()
-
-    # push initial starting point into the queue
-    queue.push((initial_state, valid_legal_actions))
-
-    while queue:
-        # get current state and current actions
-        goal_state = queue.pop()
-        current_state = goal_state[0]
-        current_actions = goal_state[1]
-
-        # chek if current not already visited and add to visited nodes if true
-        if current_state not in visited_nodes:
-            visited_nodes.append(current_state)
-            # check if current state is the goal of the problem
-            if problem.isGoalState(current_state):
-                return current_actions
-
-            else:
-                # push next states to queue if the goal is not reach
-                successor_states = problem.getSuccessors(current_state)
-                for successor_state in successor_states:
-                    x_y_coordinates = successor_state[0]
-                    pacman_direction = successor_state[1]
-                    get_to_successor_state_actions = [y for x in [current_actions, [pacman_direction]] for y in x]
-                    next_successor_state = (x_y_coordinates, get_to_successor_state_actions)
-                    queue.push(next_successor_state)
-
-    return list()
-    # util.raiseNotDefined()
-
-
-def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    priority_queue = util.PriorityQueue()
-
-    visited_nodes = list()
-    valid_legal_actions = list()
-
-    initial_state = problem.getStartState()
-
-    # push initial starting point into the queue
-    priority_queue.push((initial_state, valid_legal_actions), problem)
-
-    while priority_queue:
-        # get current state and current actions
-        goal_state = priority_queue.pop()
-        current_state = goal_state[0]
-        current_actions = goal_state[1]
-
-        # chek if current not already visited and add to visited nodes if true
-        if current_state not in visited_nodes:
-            visited_nodes.append(current_state)
-            # check if current state is the goal of the problem
-            if problem.isGoalState(current_state):
-                return current_actions
-
-            else:
-                # push next states to queue if the goal is not reach
-                successor_states = problem.getSuccessors(current_state)
-                for successor_state in successor_states:
-                    x_y_coordinates = successor_state[0]
-                    pacman_direction = successor_state[1]
-                    get_to_successor_state_actions = [y for x in [current_actions, [pacman_direction]] for y in x]
-                    next_successor_state = (x_y_coordinates, get_to_successor_state_actions)
-                    next_cost = problem.getCostOfActions(get_to_successor_state_actions)
-                    priority_queue.push(next_successor_state, next_cost)
-
-    return list()
-    #util.raiseNotDefined()
-
-
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
@@ -215,46 +82,111 @@ def nullHeuristic(state, problem=None):
     return 0
 
 
+class Search_Algo_Implementation:
+
+    def __init__(self, visited_nodes, valid_legal_actions, data_structure, initial_state, problem, hueristic=None,
+                 dfs=None, bfs=None):
+        self.data_structure = data_structure
+        self.visited_nodes = visited_nodes
+        self.valid_legal_actions = valid_legal_actions
+        self.initial_state = initial_state
+        self.problem = problem
+        self.hueristic = hueristic
+        self.bfs = bfs
+        self.dfs = dfs
+
+    def implementation(self):
+        while self.data_structure:
+            # get current state and current actions
+            current_state, current_actions = self.data_structure.pop()
+            # print('action', current_actions, 'state', current_state)
+            # chek if current not already visited and add to visited nodes if true
+            if current_state not in self.visited_nodes:
+                self.visited_nodes.append(current_state)
+                # print("============",self.visited_nodes, "===================")
+                # check if current state is the goal of the problem
+                if self.problem.isGoalState(current_state):
+                    # print(current_actions)
+                    return current_actions
+
+                else:
+                    # push next states to queue if the goal is not reach
+                    successor_states = self.problem.getSuccessors(current_state)
+                    for successor_state in successor_states:
+                        x_y_coordinates = successor_state[0]
+                        pacman_direction = successor_state[1]
+
+                        get_to_successor_state_actions = [y for x in [current_actions, [pacman_direction]] for y in x]
+                        next_successor_state = (x_y_coordinates, get_to_successor_state_actions)
+                        # breadthfirst or depthfirst
+                        if self.bfs or self.dfs:
+                            self.data_structure.push(next_successor_state)
+                        else:
+                            # astar or uniform
+                            if self.hueristic:
+                                next_cost = self.problem.getCostOfActions(
+                                    get_to_successor_state_actions) + self.hueristic(x_y_coordinates, self.problem)
+                                # print('Heuristic')
+                            else:
+                                next_cost = self.problem.getCostOfActions(get_to_successor_state_actions)
+                                # print('uniform')
+                            self.data_structure.push(next_successor_state, next_cost)
+
+
+def uniformCostSearch(problem):
+    uniform_cost_search = Search_Algo_Implementation(visited_nodes=[], valid_legal_actions=[],
+                                                     data_structure=util.PriorityQueue(),
+                                                     problem=problem,
+                                                     initial_state=problem.getStartState())
+
+    uniform_cost_search.data_structure.push(
+        (uniform_cost_search.initial_state, uniform_cost_search.valid_legal_actions), uniform_cost_search.problem)
+
+    return uniform_cost_search.implementation()
+
+
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    # use priority queue to only visit nodes of higher priority
-    priority_queue = util.PriorityQueue()
 
-    visited_nodes = list()
-    valid_legal_actions = list()
+    astar_search = Search_Algo_Implementation(visited_nodes=[], valid_legal_actions=[],
+                                              data_structure=util.PriorityQueue(),
+                                              problem=problem, hueristic=heuristic,
+                                              initial_state=problem.getStartState())
 
-    initial_state = problem.getStartState()
+    astar_search.data_structure.push((astar_search.initial_state, astar_search.valid_legal_actions),
+                                     astar_search.hueristic(astar_search.initial_state, astar_search.problem))
 
-    # push initial starting point into the queue
-    priority_queue.push((initial_state, valid_legal_actions), heuristic(initial_state, problem))
+    return astar_search.implementation()
 
-    while priority_queue:
-        # get current state and current actions
-        goal_state = priority_queue.pop()
-        current_state = goal_state[0]
-        current_actions = goal_state[1]
 
-        # chek if current not already visited and add to visited nodes if true
-        if current_state not in visited_nodes:
-            visited_nodes.append(current_state)
-            # check if current state is the goal of the problem
-            if problem.isGoalState(current_state):
-                return current_actions
+def breadthFirstSearch(problem):
+    """Search the shallowest nodes in the search tree first."""
+    "*** YOUR CODE HERE ***"
 
-            else:
-                # push next states to queue if the goal is not reach
-                successor_states = problem.getSuccessors(current_state)
-                for successor_state in successor_states:
-                    x_y_coordinates = successor_state[0]
-                    pacman_direction = successor_state[1]
-                    get_to_successor_state_actions = [y for x in [current_actions, [pacman_direction]] for y in x]
-                    next_successor_state = (x_y_coordinates, get_to_successor_state_actions)
-                    next_cost = problem.getCostOfActions(get_to_successor_state_actions) + heuristic(x_y_coordinates, problem)
-                    priority_queue.push(next_successor_state, next_cost)
+    breadth_first_search = Search_Algo_Implementation(visited_nodes=[], valid_legal_actions=[],
+                                                      data_structure=util.Queue(),
+                                                      problem=problem, bfs=True,
+                                                      initial_state=problem.getStartState())
 
-    return list()
-    #util.raiseNotDefined()
+    breadth_first_search.data_structure.push(
+        (breadth_first_search.initial_state, breadth_first_search.valid_legal_actions))
+
+    return breadth_first_search.implementation()
+
+
+def depthFirstSearch(problem):
+    """Search the shallowest nodes in the search tree first."""
+    "*** YOUR CODE HERE ***"
+
+    depth_first_search = Search_Algo_Implementation(visited_nodes=[], valid_legal_actions=[],
+                                                    data_structure=util.Stack(),
+                                                    problem=problem, dfs=True,
+                                                    initial_state=problem.getStartState())
+
+    depth_first_search.data_structure.push((depth_first_search.initial_state, depth_first_search.valid_legal_actions))
+
+    return depth_first_search.implementation()
 
 
 # Abbreviations
