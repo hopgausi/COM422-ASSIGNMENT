@@ -1,7 +1,7 @@
 # COM422-ASSIGNMENT
 PACMAN GAME ASSIGNMENT
 
-## Problems implementated
+## Problems implemented
 1. breadth first search
 2. depth first search
 3. astar search
